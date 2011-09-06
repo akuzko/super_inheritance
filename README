@@ -1,13 +1,49 @@
 SuperInheritance
 ================
 
-Introduction goes here.
+MTI inheritance for ActiveRecord
+
+
+Installation
+============
+
+`rails plugin install git@github.com:akuzko/super_inheritance.git`
+
+After installation, for quickly add models to play with:
+
+`rails g super_inheritance:example`
+`rake db:migrate`
 
 
 Example
 =======
 
-Example goes here.
+# `media` table holds user_id, name, timestamps
+class Media < ActiveRecord::Base
+  acts_as_super
+  
+  belongs_to :user
+  has_many :comments
+  
+  validates_presence_of :name, :user
+end
 
+# `audios` table holds super_media_id, author
+class Audio < Media
+  validates_presence_of :author
+end
 
-Copyright (c) 2011 [name of plugin creator], released under the MIT license
+> audio = Audio.new :name => 'foo', :author => 'bar'
+=> #<Audio id: nil, super_media_id: nil, author: "bar", user_id: nil, name: "foo", created_at: nil, updated_at: nil>
+> audio.attributes
+=> {"author"=>"bar", "created_at"=>nil, "name"=>"foo", "super_media_id"=>nil, "updated_at"=>nil, "user_id"=>nil}
+> audio.valid?
+=> false
+> audio.user_id = 1; audio.save
+=> true
+> audio = Audio.includes(:user).last
+=> #<Audio id: 1, super_media_id: 1, author: "bar", user_id: 1, name: "foo", created_at: "2011-09-06 16:13:36.66258", updated_at: "2011-09-06 16:13:36.669142">
+> audio.name = 'foo.bar'; audio.changed_attributes
+=> {"name"=>"foo"}
+
+Copyright (c) 2011 [Artem Kuzko], released under the MIT license
