@@ -45,9 +45,9 @@ module SuperInheritance
         super + superclass_columns
       end
       
-      def unscoped
-        default_scoping[0]
-      end
+      #def unscoped
+      #  default_scoping[0]
+      #end
       
       def superclass_columns
         superclass.columns.reject{ |c| c.name == superclass.primary_key }
@@ -57,7 +57,6 @@ module SuperInheritance
       def superclass_column_names
         superclass_columns.map(&:name)
       end
-      private :superclass_column_names
     end
     
     def column_for_attribute name
